@@ -17,6 +17,10 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import { 
+  AiOutlineProduct,
+  AiOutlineHome
+ } from "react-icons/ai";
 
 type NavItem = {
   name: string;
@@ -27,9 +31,18 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   {
-    icon: <GridIcon />,
+    icon: <AiOutlineHome />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "#!", pro: false }],
+    path: "/TailAdmin",
+  },
+  {
+    icon: <AiOutlineProduct />,
+    name: "Inventario",    
+    subItems: [
+      { name: "Inventario general", path: "general-inventory", pro: false },
+      { name: "Stock por sucursal", path: "#!", pro: false },
+      { name: "Translado de productos", path: "#!", pro: false }
+    ],
   },
   {
     icon: <CalenderIcon />,
