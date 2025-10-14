@@ -141,6 +141,12 @@ export default function GeneralInventoryTable() {
                  <TableCell className="px-4 py-3 text-start">
                     <div className="flex items-center space-x-3">
                         <button 
+                        className="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors"
+                        title="Detalles"
+                        >
+                        <FaEye />
+                        </button>
+                        <button 
                         className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                         title="Editar"
                         >
@@ -151,18 +157,6 @@ export default function GeneralInventoryTable() {
                         title="Eliminar"
                         >
                         <FaTrash />
-                        </button>
-                        <button 
-                        className="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors"
-                        title="Detalles"
-                        >
-                        <FaEye />
-                        </button>
-                        <button 
-                        className="p-2 text-purple-500 hover:bg-purple-50 rounded-lg transition-colors"
-                        title="Más opciones"
-                        >
-                        <FaEllipsisH />
                         </button>
                     </div>
                   </TableCell>
