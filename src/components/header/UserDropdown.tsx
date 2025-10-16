@@ -2,9 +2,15 @@ import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { Link } from "react-router";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { apiService } from "../../service/api";
+
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -13,6 +19,30 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  // Función para manejar el cierre de sesión
+  const handleLogout = async () => {
+    closeDropdown(); // Cierra el menú desplegable
+    try {
+      // Llama al endpoint del backend para destruir la sesión
+      await apiService.post('/auth/logout', {});
+      
+      // Limpia el estado del usuario en el frontend
+      setUser(null);
+      
+      // Redirige al usuario a la página de inicio de sesión
+      navigate('/TailAdmin/signin');
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      // Opcional: mostrar un mensaje de error al usuario
+    }
+  };
+
+  // Si no hay usuario, no se muestra el dropdown (opcional pero recomendado)
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="relative">
       <button
@@ -23,25 +53,9 @@ export default function UserDropdown() {
           <img src="./images/user/owner.jpg" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">Musharof</span>
-        <svg
-          className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          width="18"
-          height="20"
-          viewBox="0 0 18 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4.3125 8.65625L9 13.3437L13.6875 8.65625"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        {/* Muestra el nombre del usuario real */}
+        <span className="block mr-1 font-medium text-theme-sm">{user.usuario}</span>
+
       </button>
 
       <Dropdown
@@ -50,11 +64,12 @@ export default function UserDropdown() {
         className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark"
       >
         <div>
+          {/* Muestra el nombre del usuario real aquí también */}
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Musharof Chowdhury
+            {user.usuario}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            randomuser@pimjo.com
+            Rol ID: {user.rolId} {/* Opcional: mostrar el rol */}
           </span>
         </div>
 
@@ -135,9 +150,11 @@ export default function UserDropdown() {
             </DropdownItem>
           </li>
         </ul>
-        <Link
-          to="/signin"
-          className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+
+        <DropdownItem
+          onItemClick={handleLogout} // Llama a nuestra función al hacer clic
+          tag="button" // Se comporta como un botón, no como un enlace
+          className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 ..."
         >
           <svg
             className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
@@ -154,9 +171,10 @@ export default function UserDropdown() {
               fill=""
             />
           </svg>
-          Sign out
-        </Link>
+          Cerrar Sesión
+        </DropdownItem>
       </Dropdown>
     </div>
   );
 }
+        

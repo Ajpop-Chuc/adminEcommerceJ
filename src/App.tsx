@@ -1,3 +1,6 @@
+
+import { AuthProvider } from "./context/AuthContext"; 
+
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
@@ -21,9 +24,10 @@ import Home from "./pages/Dashboard/Home";
 
 import GeneralInventoryTable from "./pages/Inventory/GeneralInventory"; // Importa el componente de la tabla
 
+
 export default function App() {
   return (
-    <>
+    <AuthProvider>
       <Router>
         <ScrollToTop />
         <Routes>
@@ -64,6 +68,6 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   );
 }
