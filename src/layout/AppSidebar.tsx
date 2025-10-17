@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
     name: "Inventario",    
     subItems: [
       { name: "Inventario general", path: "general-inventory", pro: false },
-      { name: "Stock por sucursal", path: "#!", pro: false },
+      { name: "Stock por sucursal", path: "sucursal-stock", pro: false },
       { name: "Translado de productos", path: "#!", pro: false }
     ],
   },

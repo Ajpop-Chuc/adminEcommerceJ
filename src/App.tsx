@@ -19,7 +19,10 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 
-import GeneralInventoryTable from "./pages/Inventory/GeneralInventory"; // Importa el componente de la tabla
+import GeneralInventoryPage from "./pages/Inventory/GeneralInventory"; // Importa el componente de la pagina
+import SucursalStockPage from "./pages/Inventory/sucursalStock"; 
+import ProductDetailsPage from "./pages/Inventory/ProductDetails"
+import ProductTrasferPage from "./pages/Inventory/ProductTransfer"
 
 export default function App() {
   return (
@@ -41,7 +44,12 @@ export default function App() {
 
             {/* Tables */}
             <Route path="basic-tables" element={<BasicTables />} />
-            <Route path="general-inventory" element={<GeneralInventoryTable />} />
+            <Route path="general-inventory" element={<GeneralInventoryPage />} />
+            <Route path="sucursal-stock" element={<SucursalStockPage />}/>
+
+            {/* Cards */}
+            <Route path="product-details/:id" element={<ProductDetailsPage />} />
+            <Route path="product-transfer/:id_producto/:id_sucursal/:cantidad_disponible" element={<ProductTrasferPage />} />
 
             {/* Ui Elements */}
             <Route path="alerts" element={<Alerts />} />

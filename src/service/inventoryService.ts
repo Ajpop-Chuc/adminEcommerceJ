@@ -13,6 +13,6 @@ export interface InventoryItem {
 export const inventoryService = {
   // Obtener todo el inventario
   async getProductosCantidades(): Promise<InventoryItem[]> {
-    return apiService.get('/productos/productos_cantidades');
-  }
+    return await apiService.get('/productos/productos_cantidades');
+  } 
 };

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaEye, FaInfoCircle, FaEllipsisH } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaEye, FaExchangeAlt } from 'react-icons/fa';
+import { Link } from 'react-router';
 import {
   Table,
   TableBody,
@@ -131,7 +132,7 @@ export default function GeneralInventoryTable() {
                       size="sm"
                       color={
                         item.estado === true
-                          ? "success"
+                          ? "info"
                           : "error"
                       }
                     >
@@ -140,25 +141,15 @@ export default function GeneralInventoryTable() {
                   </TableCell>
                  <TableCell className="px-4 py-3 text-start">
                     <div className="flex items-center space-x-3">
-                        <button 
-                        className="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-colors"
-                        title="Detalles"
-                        >
-                        <FaEye />
-                        </button>
-                        <button 
-                        className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="Editar"
-                        >
-                        <FaEdit />
-                        </button>
-                        <button 
-                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Eliminar"
-                        >
-                        <FaTrash />
-                        </button>
-                    </div>
+                          <Link
+                            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
+                            to={`/TailAdmin/product-details/${item.id_producto}`}
+                          >
+                            <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Ver Detalles" >
+                                <FaEye />
+                            </button>
+                          </Link>  
+                        </div>
                   </TableCell>
                 </TableRow>
               ))}
