@@ -1,3 +1,6 @@
+
+import { AuthProvider } from "./context/AuthContext"; 
+
 import { BrowserRouter as Router, Routes, Route } from "react-router";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
@@ -24,9 +27,10 @@ import SucursalStockPage from "./pages/Inventory/sucursalStock";
 import ProductDetailsPage from "./pages/Inventory/ProductDetails"
 import ProductTrasferPage from "./pages/Inventory/ProductTransfer"
 
+
 export default function App() {
   return (
-    <>
+    <AuthProvider>
       <Router>
         <ScrollToTop />
         <Routes>
@@ -72,6 +76,6 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   );
 }
