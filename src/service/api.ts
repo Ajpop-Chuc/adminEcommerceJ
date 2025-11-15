@@ -8,16 +8,21 @@ class ApiService {
     this.baseURL = API_CONFIG.baseURL;
   }
 
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  public async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
+
+    //1. preparar las cabeceras por defecto
+    const defaultHeaders: HeadersInit = new Headers(options.headers);
+
+    //2. decidir si se añade Content-Type
+    if (!(options.body instanceof FormData)) {
+      defaultHeaders.set('Content-Type', 'application/json');
+    }
     
     const config: RequestInit = {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
+      headers: defaultHeaders,
       signal: controller.signal,
       ...options,
     };
@@ -32,7 +37,12 @@ class ApiService {
         throw new HttpError(response.status, response.statusText, errorData);
       }
 
-      return await response.json();
+      const contentType = response.headers.get('Content-Type');
+      if (contentType && contentType.includes('application/json')) {
+        return await response.json();
+      } else {
+        return {} as T; // Retornar un objeto vacío si no es JSON
+      }
     } catch (error) {
       clearTimeout(timeoutId);
       
@@ -65,6 +75,14 @@ class ApiService {
 
   async delete<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, { method: 'DELETE' });
+  }
+  
+  // metodo patch para actualizaciones parciales
+  async patch<T>(endpoint: string, data: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
   }
 }
 

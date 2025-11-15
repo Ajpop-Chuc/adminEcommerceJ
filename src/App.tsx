@@ -26,7 +26,9 @@ import GeneralInventoryPage from "./pages/Inventory/GeneralInventory"; // Import
 import SucursalStockPage from "./pages/Inventory/sucursalStock"; 
 import ProductDetailsPage from "./pages/Inventory/ProductDetails"
 import ProductTrasferPage from "./pages/Inventory/ProductTransfer"
-
+import CreateProductPage from "./pages/Inventory/CreateProductPage"; // Nueva página para crear productos
+import EditProductPage from "./pages/Inventory/EditProductPage";
+import DisabledInventoryPage from "./pages/Inventory/DisabledInventoryPage";
 
 export default function App() {
   return (
@@ -66,6 +68,13 @@ export default function App() {
             {/* Charts */}
             <Route path="line-chart" element={<LineChart />} />
             <Route path="bar-chart" element={<BarChart />} />
+
+             {/* Nueva ruta para agregar productos */}
+            <Route path="inventory/add" element={<CreateProductPage />} />
+            {/* Ruta para editar productos   */}
+            <Route path="inventory/edit/:id" element={<EditProductPage />} />
+            {/* Ruta para productos deshabilitados */}
+            <Route path="inventory/disabled-inventory" element={<DisabledInventoryPage />} />
           </Route>
 
           {/* Auth Layout */}
@@ -74,6 +83,11 @@ export default function App() {
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
+          
+         
+
+
+
         </Routes>
       </Router>
     </AuthProvider>

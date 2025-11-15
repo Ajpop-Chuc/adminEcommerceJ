@@ -7,6 +7,7 @@ export interface ProductItem {
   descripcion: string;
   precio_unitario: number;
   estado: boolean;
+  imagen_url: string | null;
   sucursales: sucursalItem[];
 }
 

@@ -12,7 +12,7 @@ export default function BasicTables() {
       />
       <PageBreadcrumb pageTitle="Inventario General" />
       <div className="space-y-6">
-        <ComponentCard title="General Inventory">
+        <ComponentCard title="Inventario General">
           <GeneralInventoryTable />
         </ComponentCard>
       </div>

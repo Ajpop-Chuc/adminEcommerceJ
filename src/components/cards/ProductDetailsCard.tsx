@@ -2,6 +2,10 @@
 import { useState, useEffect } from 'react';
 import { ProductItem, productService } from '../../service/productDetailsService';
 import Badge from "../ui/badge/Badge";
+import { IMAGE_BASE_URL } from '../../config/api';
+
+// Define una imagen de reemplazo por si el producto no tiene una
+const FALLBACK_IMAGE_URL = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNiPm3mUfNgg_S0TE_LLonb_Hcemsibyej3w&s';
 
 interface ProductDetailsCardProps {
   productId?: string;
@@ -72,6 +76,11 @@ export default function ProductDetailsCard({ productId }: ProductDetailsCardProp
 
   const sucursales = product.sucursales || [];
 
+  // Construir la URL completa de la imagen
+  const fullImageUrl = product.imagen_url
+    ? `${IMAGE_BASE_URL}/${product.imagen_url}`
+    : FALLBACK_IMAGE_URL;
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
@@ -97,13 +106,13 @@ export default function ProductDetailsCard({ productId }: ProductDetailsCardProp
             <div className="lg:col-span-1">
               {/* Imagen */}
                 <img 
-                // src={product.imagen_url} //
-                src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTNiPm3mUfNgg_S0TE_LLonb_Hcemsibyej3w&s'
+                // 
+                src={fullImageUrl}
                 alt={product.nombre}
                 className="w-full h-64 object-cover rounded-lg"
+                // por si la imagen no carga
                 onError={(e) => {
-                    // Fallback si la imagen no carga
-                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.src = FALLBACK_IMAGE_URL;
                 }}
                 />
               {/* Información de Precio */}

@@ -1,30 +1,23 @@
 import { useEffect, useState } from 'react';
-import { FaEdit, FaTrash, FaEye, FaExchangeAlt } from 'react-icons/fa';
-//import { Link } from 'react-router';
-import { Link } from 'react-router-dom';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "../../ui/table";
-
+import { FaCheck } from 'react-icons/fa'; 
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
-import Input from '../../form/input/InputField';
 import { InventoryItem, inventoryService } from '../../../service/inventoryService';
+import { Link } from 'react-router-dom';
+import Input from '../../form/input/InputField';
 import Button from '../../ui/button/Button';
+import { useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
 
-export default function GeneralInventoryTable() {
+
+export default function DisabledInventoryTable() {
   const [allInventory, setAllInventory] = useState<InventoryItem[]>([]);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  
+  const navigate = useNavigate();
 
-  // Cargar datos al montar el componente
   useEffect(() => {
     loadInventory();
   }, []);
@@ -42,51 +35,52 @@ export default function GeneralInventoryTable() {
     }
   }, [searchTerm, allInventory]); // Se re-ejecuta si la búsqueda o la lista maestra cambian
 
-
   const loadInventory = async () => {
     try {
       setLoading(true);
-      const data = await inventoryService.getProductosCantidades();
+      // 1. Llama a la nueva función del servicio
+      const data = await inventoryService.getDisabledProducts(); 
       setAllInventory(data); // Guarda la lista maestra
-      setInventory(data); // guarda los datos en la lista filtrada
+      setInventory(data);
       setError(null);
     } catch (err) {
-      setError('Error al cargar el inventario');
-      console.error('Error loading inventory:', err);
+      setError('Error al cargar el inventario desactivado');
+      console.error('Error loading disabled inventory:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  // funcion para manejar la desactivacion/activacion de productos
-  const handleDeactivate = async (id: number) => {
+  // 2. Función para manejar la ACTIVACIÓN
+  const handleActivate = async (id: number) => {
   const result = await Swal.fire({
-    title: '¿Desactivar producto?',
-    text: 'Esta acción desactivará el producto seleccionado.',
-    icon: 'warning',
+    title: "¿Reactivar producto?",
+    text: "¿Estás seguro de que deseas reactivar este producto?",
+    icon: "warning",
     showCancelButton: true,
-    confirmButtonText: 'Sí, desactivar',
-    cancelButtonText: 'Cancelar',
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Sí, reactivar",
+    cancelButtonText: "Cancelar"
   });
 
   if (result.isConfirmed) {
     try {
-      await inventoryService.deactivateProduct(id.toString());
-      
+      await inventoryService.activateProduct(id.toString());
+
       await Swal.fire({
-        title: 'Desactivado',
-        text: 'El producto fue desactivado correctamente.',
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
+        title: "¡Producto activado!",
+        text: "El producto se ha reactivado con éxito.",
+        icon: "success",
+        confirmButtonText: "OK"
       });
 
-      loadInventory(); // Recargar lista
+      loadInventory();
     } catch (error) {
       Swal.fire({
-        title: 'Error',
-        text: 'Error al desactivar el producto.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar',
+        title: "Error",
+        text: "Hubo un problema al reactivar el producto.",
+        icon: "error"
       });
       console.error(error);
     }
@@ -126,18 +120,11 @@ export default function GeneralInventoryTable() {
         </div>
         {/* Contenedor para alinear los botones */}
         <div className="flex gap-3">
-          <Link to="/TailAdmin/inventory/disabled-inventory">
-            <Button size="md" variant="outline"> {/* Usamos "outline" para que sea secundario */}
-              <FaTrash className="mr-2" /> {/* Opcional: añade un icono */}
-              Ver Desactivados
-            </Button>
-          </Link>
-          {/* Tu botón existente de "Agregar Producto" */}
-          <Link to="/TailAdmin/inventory/add">
-            <Button size="md" variant="primary">
-              Agregar Producto
-            </Button>
-          </Link>
+          
+          {/* Boton para regresar al inventario" */}
+          <Button type="button" variant="primary" onClick={() => navigate('/TailAdmin/general-inventory')}>
+            Regresar
+          </Button>
         </div>
       </div>
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -191,7 +178,6 @@ export default function GeneralInventoryTable() {
                 </TableCell>
               </TableRow>
             </TableHeader>
-
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {inventory.map((item) => (
@@ -212,43 +198,21 @@ export default function GeneralInventoryTable() {
                     {item.cantidad_total}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    <Badge
-                      size="sm"
-                      color={
-                        item.estado === true
-                          ? "info"
-                          : "error"
-                      }
-                    >
-                      {item.estado === true ? "Activo" : "Inactivo"}
+                    <Badge size="sm" color="error">
+                      Inactivo
                     </Badge>
                   </TableCell>
-                 <TableCell className="px-4 py-3 text-start">
+                  <TableCell className="px-4 py-3 text-start">
                     <div className="flex items-center space-x-3">
-                          <Link
-                            className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"
-                            to={`/TailAdmin/product-details/${item.id_producto}`}
-                          >
-                            <button className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors" title="Ver Detalles" >
-                                <FaEye />
-                            </button>
-                          </Link>
-                          <Link
-                          className="inline-flex items-center ... text-green-600"
-                          to={`/TailAdmin/inventory/edit/${item.id_producto}`} 
-                        >
-                          <button className="p-2 hover:bg-green-100 rounded-lg transition-colors" title="Editar Producto">
-                            <FaEdit />
-                          </button>
-                        </Link> 
-                        <button 
-                          onClick={() => handleDeactivate(item.id_producto)}
-                          className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors" 
-                          title="Desactivar Producto"
-                        >
-                          <FaTrash />
-                        </button> 
-                        </div>
+                      {/* 3. Botón de ACTIVAR */}
+                      <button 
+                        onClick={() => handleActivate(item.id_producto)}
+                        className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors" 
+                        title="Reactivar Producto"
+                      >
+                        <FaCheck />
+                      </button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
